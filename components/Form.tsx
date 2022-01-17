@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './Form.module.css';
 
 const Form = ({ persons, setPersons }) => {
   const handleClick = (id) => {
@@ -15,7 +16,7 @@ const Form = ({ persons, setPersons }) => {
     });
   };
   return (
-    <div>
+    <div className={styles.container}>
       {persons.map((person) => (
         <div key={person.id}>
           <h2>{person.name}</h2>

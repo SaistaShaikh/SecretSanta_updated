@@ -1,9 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-const Button = (props) => {
+
+const Button: React.FC<{ path: string }> = ({ path }) => {
   return (
     <div>
-      <Link href={props.path}>
+      <Link href={path}>
         <a>Ho! Ho! Ho!</a>
       </Link>
     </div>

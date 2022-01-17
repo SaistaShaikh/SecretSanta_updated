@@ -1,41 +1,13 @@
 import Form from '../components/Form';
 import React, { useState, useEffect } from 'react';
 import Button from '../components/Button';
+import { json } from 'stream/consumers';
 
-const HomePage: React.FC = () => {
-  const [persons, setPersons] = useState([]);
-  const [name, setName] = useState<string>('');
+const HomePage: React.FC = (props: any) => {
+  const [persons, setPersons] = useState(props.persons);
+  const [name, setName] = useState('');
   const [arr, setArr] = useState([]);
-
-  var pair = (arr) => {
-    var result = [];
-
-    var recipients: [] = arr.slice();
-    var len: number = arr.length;
-
-    for (var i: number = 0; i < len; i++) {
-      var sender: string = arr[i];
-      var recipientIndex: number = Math.floor(
-        Math.random() * recipients.length
-      );
-      while (recipients[recipientIndex] === sender) {
-        recipientIndex = Math.floor(Math.random() * recipients.length);
-      }
-      var recipient: string = recipients.splice(recipientIndex, 1)[0];
-
-      result.push(recipient, sender);
-    }
-
-    return result;
-  };
-
-  const fun = () => {
-    var arr = [];
-    persons.map((person) => {
-      arr.push(person.name);
-    });
-    pair(arr);
-  };
+  // var result = [];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,23 +25,26 @@ const HomePage: React.FC = () => {
       });
   };
 
-  useEffect(() => {
-    fetch('http://localhost:8000/persons')
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setPersons(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch('http://localhost:8000/persons')
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setPersons(data);
+  //     });
+  // }, []);
+
+  // useEffect(() => {
+  //   setArr(fun());
+  // }, [persons]);
 
   useEffect(() => {
-    fun();
-  }, [persons]);
+    console.log(arr);
+  }, [arr]);
 
   return (
     <div>
-      <div>{persons && <Form persons={persons} setPersons={setPersons} />}</div>
       <div>
         <form onSubmit={handleSubmit}>
           <label>
@@ -82,9 +57,19 @@ const HomePage: React.FC = () => {
           <button>Add</button>
         </form>
       </div>
+      <div>{persons && <Form persons={persons} setPersons={setPersons} />}</div>
+
       <Button path='./main/display' />
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  const res = await fetch('http://localhost:8000/persons');
+  const persons = await res.json();
+  return {
+    props: { persons },
+  };
+}
 
 export default HomePage;
